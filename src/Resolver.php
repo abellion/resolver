@@ -8,7 +8,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionFunction;
 use ReflectionParameter;
-use ResolverException as Exception;
+use Abellion\Resolver\ResolverException as Exception;
 
 class Resolver
 {
