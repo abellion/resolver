@@ -14,4 +14,9 @@ class AParameter
 		$this->b = $b;
 		$this->name = $name;
 	}
+
+	public function getName()
+	{
+		return $this->name;
+	}
 }

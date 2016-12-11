@@ -11,6 +11,10 @@ class ResolverTest extends TestCase
 	{
 	}
 
+	/**
+	 * Types detection
+	 */
+
 	public function testIsClass()
 	{
 		$this->assertTrue(Resolver::isClass(Resolver::class));
@@ -24,7 +28,6 @@ class ResolverTest extends TestCase
 		$this->assertFalse(Resolver::isClass([Resolver::class, 'isClass']));
 		$this->assertFalse(Resolver::isClass('Abellion\Resolver\Resolver::isClass'));
 	}
-
 	public function testIsMethod()
 	{
 		$this->assertTrue(Resolver::isMethod([$this, 'testIsClass']));
@@ -38,7 +41,6 @@ class ResolverTest extends TestCase
 		$this->assertFalse(Resolver::isMethod(Resolver::class));
 		$this->assertFalse(Resolver::isMethod('Abellion\Resolver\Resolver'));
 	}
-
 	public function testIsFunction()
 	{
 		$this->assertTrue(Resolver::isFunction('strlen'));
@@ -53,14 +55,14 @@ class ResolverTest extends TestCase
 		$this->assertFalse(Resolver::isFunction('Abellion\Resolver\Resolver'));
 	}
 
-	public function testResolveClass()
-	{
-		$resolver = new Resolver;
+	/**
+	 * Parameters resolver
+	 *
+	 * I'm testing by resolving classes because the implementation should use the
+	 * "resolveParameters" method to resolve the parameters from classes, methods or functions
+	 */
 
-		$this->assertInstanceOf(Resolver::class, $resolver->resolveClass(Resolver::class));
-		$this->assertInstanceOf(ResolverTest::class, $resolver->resolveClass(ResolverTest::class));
-	}
-	public function testResolveClassWithDependenciesA()
+	public function testResolveParametersA()
 	{
 		$resolver = new Resolver;
 
@@ -75,7 +77,7 @@ class ResolverTest extends TestCase
 		$this->assertInstanceOf(Mocks\A::class, $test->a);
 		$this->assertInstanceOf(Mocks\B::class, $test->b);
 	}
-	public function testResolveClassWithDependenciesB()
+	public function testResolveParametersB()
 	{
 		$resolver = new Resolver;
 		$parametersA = ['name' => 'Antoine'];
@@ -95,7 +97,7 @@ class ResolverTest extends TestCase
 		$this->assertInstanceOf(Mocks\B::class, $test->b);
 		$this->assertEquals($test->name, 'Antoine');
 	}
-	public function testResolveClassWithDependenciesC()
+	public function testResolveParametersC()
 	{
 		$resolver = new Resolver;
 		$parametersA = ['name' => 'Antoine Bellion'];
@@ -122,7 +124,7 @@ class ResolverTest extends TestCase
 		$this->assertInstanceOf(Mocks\B::class, $test->b);
 		$this->assertEquals($test->name, 'Antoine Bellion');
 	}
-	public function testResolveClassWithDependenciesD()
+	public function testResolveParametersD()
 	{
 		$resolver = new Resolver;
 		$parametersA = ['name' => 'Antoine Bellion', 'age' => 20];
@@ -161,5 +163,40 @@ class ResolverTest extends TestCase
 		$this->assertInstanceOf(Mocks\B::class, $test->b);
 		$this->assertEquals($test->age, 20);
 		$this->assertEquals($test->name, 'Antoine');
+	}
+
+	/**
+	 * General resolvers
+	 */
+
+	public function testResolveClass()
+	{
+		$resolver = new Resolver;
+
+		$this->assertInstanceOf(Resolver::class, $resolver->resolveClass(Resolver::class));
+		$this->assertInstanceOf(Resolver::class, $resolver->resolveClass('Abellion\Resolver\Resolver'));
+	}
+	public function testResolveMethod()
+	{
+		$resolver = new Resolver;
+		$parametersA = ['name' => 'Antoine', 'age' => 20];
+
+		$test = $resolver->resolveClass(Mocks\CParameter::class, $parametersA);
+
+		$this->assertEquals($resolver->resolveMethod([$test, 'getAge']), 20);
+		$this->assertEquals($resolver->resolveMethod([$test, 'getName']), 'Antoine');
+
+		$this->assertTrue($resolver->resolveMethod([$resolver, 'isClass'], [Resolver::class]));
+		$this->assertTrue($resolver->resolveMethod([Resolver::class, 'isClass'], [Resolver::class]));
+		$this->assertTrue($resolver->resolveMethod('Abellion\Resolver\Resolver::isClass', [Resolver::class]));
+	}
+	public function testResolveFunction()
+	{
+		$resolver = new Resolver;
+
+		$this->assertEquals($resolver->resolveFunction('strlen', ['Antoine']), 7);
+		$this->assertEquals($resolver->resolveFunction(function() {
+			return 'Antoine';
+		}), 'Antoine');
 	}
 }
