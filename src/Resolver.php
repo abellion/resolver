@@ -3,12 +3,12 @@
 namespace Abellion\Resolver;
 
 use Closure;
-use Exception;
 use Reflector;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionFunction;
 use ReflectionParameter;
+use ResolverException as Exception;
 
 class Resolver
 {
@@ -50,17 +50,6 @@ class Resolver
     public static function isFunction($value)
     {
         return is_callable($value) && ($value instanceof Closure || is_string($value) && function_exists($value));
-    }
-
-    /**
-     * Check if something is resolvable
-     *
-     * @param  mixed  $value
-     * @return boolean
-     */
-    public static function isResolvable($value)
-    {
-        return self::isClass($value) || self::isMethod($value) || self::isFunction($value);
     }
 
     /**
