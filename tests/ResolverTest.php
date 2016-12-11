@@ -2,6 +2,10 @@
 
 namespace Abellion\Resolver\Tests;
 
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionFunction;
+
 use PHPUnit\Framework\TestCase;
 use Abellion\Resolver\Resolver;
 
@@ -163,9 +167,40 @@ class ResolverTest extends TestCase
 	}
 
 	/**
+	 * Reflector getters
+	 */
+	public function testGetReflector()
+	{
+		$this->assertInstanceOf(ReflectionClass::class, Resolver::getReflector(Mocks\A::class));
+		$this->assertInstanceOf(ReflectionMethod::class, Resolver::getReflector([Mocks\A::class, 'getName']));
+		$this->assertInstanceOf(ReflectionFunction::class, Resolver::getReflector('strlen'));
+	}
+	public function testGetClassReflector()
+	{
+		$this->assertInstanceOf(ReflectionClass::class, Resolver::getClassReflector(Mocks\A::class));
+	}
+	public function testGetMethodReflector()
+	{
+		$this->assertInstanceOf(ReflectionMethod::class, Resolver::getMethodReflector([Mocks\A::class, 'getName']));
+		$this->assertInstanceOf(ReflectionMethod::class, Resolver::getMethodReflector('Abellion\Resolver\Tests\Mocks\A::getName'));
+	}
+	public function testGetFunctionReflector()
+	{
+		$this->assertInstanceOf(ReflectionFunction::class, Resolver::getFunctionReflector('strlen'));
+	}
+
+	/**
 	 * General resolvers
 	 */
 
+	public function testResolve()
+	{
+		$resolver = new Resolver;
+
+		$this->assertInstanceOf(Mocks\A::class, $resolver->resolve(Mocks\A::class));
+		$this->assertEquals('Antoine', $resolver->resolve([Mocks\A::class, 'getName']));
+		$this->assertEquals($resolver->resolve('time'), time());
+	}
 	public function testResolveClass()
 	{
 		$resolver = new Resolver;
