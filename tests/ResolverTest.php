@@ -8,6 +8,7 @@ use ReflectionFunction;
 
 use PHPUnit\Framework\TestCase;
 use Abellion\Resolver\Resolver;
+use Abellion\Resolver\ResolverException;
 
 class ResolverTest extends TestCase
 {
@@ -97,6 +98,10 @@ class ResolverTest extends TestCase
 		$this->assertInstanceOf(Mocks\A::class, $test->a);
 		$this->assertInstanceOf(Mocks\B::class, $test->b);
 		$this->assertEquals($test->name, 'Antoine');
+
+		/* Test exception */
+		$this->expectException(ResolverException::class);
+		$resolver->resolveClass(Mocks\AParameter::class);
 	}
 	public function testResolveParametersC()
 	{
@@ -169,6 +174,7 @@ class ResolverTest extends TestCase
 	/**
 	 * Reflector getters
 	 */
+
 	public function testGetReflector()
 	{
 		$this->assertInstanceOf(ReflectionClass::class, Resolver::getReflector(Mocks\A::class));
@@ -200,6 +206,10 @@ class ResolverTest extends TestCase
 		$this->assertInstanceOf(Mocks\A::class, $resolver->resolve(Mocks\A::class));
 		$this->assertEquals('Antoine', $resolver->resolve([Mocks\A::class, 'getName']));
 		$this->assertEquals($resolver->resolve('time'), time());
+
+		/* Test exception */
+		$this->expectException(ResolverException::class);
+		$resolver->resolve(Test::class);
 	}
 	public function testResolveClass()
 	{
