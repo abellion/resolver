@@ -65,15 +65,15 @@ class ResolverTest extends TestCase
 		$resolver = new Resolver;
 
 		/* Test with one nested */
-		$test1 = $resolver->resolveClass(Mocks\B::class);
-		$this->assertInstanceOf(Mocks\B::class, $test1);
-		$this->assertInstanceOf(Mocks\A::class, $test1->a);
+		$test = $resolver->resolveClass(Mocks\B::class);
+		$this->assertInstanceOf(Mocks\B::class, $test);
+		$this->assertInstanceOf(Mocks\A::class, $test->a);
 
 		/* Test with two nested */
-		$test2 = $resolver->resolveClass(Mocks\C::class);
-		$this->assertInstanceOf(Mocks\C::class, $test2);
-		$this->assertInstanceOf(Mocks\A::class, $test2->a);
-		$this->assertInstanceOf(Mocks\B::class, $test2->b);
+		$test = $resolver->resolveClass(Mocks\C::class);
+		$this->assertInstanceOf(Mocks\C::class, $test);
+		$this->assertInstanceOf(Mocks\A::class, $test->a);
+		$this->assertInstanceOf(Mocks\B::class, $test->b);
 	}
 	public function testResolveClassWithDependenciesB()
 	{
@@ -82,18 +82,18 @@ class ResolverTest extends TestCase
 		$parametersB = [2 => 'Antoine'];
 
 		/* Test with named parameter */
-		$test1 = $resolver->resolveClass(Mocks\AParameter::class, $parametersA);
-		$this->assertInstanceOf(Mocks\AParameter::class, $test1);
-		$this->assertInstanceOf(Mocks\A::class, $test1->a);
-		$this->assertInstanceOf(Mocks\B::class, $test1->b);
-		$this->assertEquals($test1->name, 'Antoine');
+		$test = $resolver->resolveClass(Mocks\AParameter::class, $parametersA);
+		$this->assertInstanceOf(Mocks\AParameter::class, $test);
+		$this->assertInstanceOf(Mocks\A::class, $test->a);
+		$this->assertInstanceOf(Mocks\B::class, $test->b);
+		$this->assertEquals($test->name, 'Antoine');
 
 		/* Test with numbered parameter */
-		$test2 = $resolver->resolveClass(Mocks\AParameter::class, $parametersB);
-		$this->assertInstanceOf(Mocks\AParameter::class, $test2);
-		$this->assertInstanceOf(Mocks\A::class, $test2->a);
-		$this->assertInstanceOf(Mocks\B::class, $test2->b);
-		$this->assertEquals($test2->name, 'Antoine');
+		$test = $resolver->resolveClass(Mocks\AParameter::class, $parametersB);
+		$this->assertInstanceOf(Mocks\AParameter::class, $test);
+		$this->assertInstanceOf(Mocks\A::class, $test->a);
+		$this->assertInstanceOf(Mocks\B::class, $test->b);
+		$this->assertEquals($test->name, 'Antoine');
 	}
 	public function testResolveClassWithDependenciesC()
 	{
@@ -102,24 +102,64 @@ class ResolverTest extends TestCase
 		$parametersB = [2 => 'Antoine Bellion'];
 
 		/* Test without parameter */
-		$test1 = $resolver->resolveClass(Mocks\BParameter::class);
-		$this->assertInstanceOf(Mocks\BParameter::class, $test1);
-		$this->assertInstanceOf(Mocks\A::class, $test1->a);
-		$this->assertInstanceOf(Mocks\B::class, $test1->b);
-		$this->assertEquals($test1->name, 'Antoine');
+		$test = $resolver->resolveClass(Mocks\BParameter::class);
+		$this->assertInstanceOf(Mocks\BParameter::class, $test);
+		$this->assertInstanceOf(Mocks\A::class, $test->a);
+		$this->assertInstanceOf(Mocks\B::class, $test->b);
+		$this->assertEquals($test->name, 'Antoine');
 
 		/* Test with named parameter */
-		$test1 = $resolver->resolveClass(Mocks\BParameter::class, $parametersA);
-		$this->assertInstanceOf(Mocks\BParameter::class, $test1);
-		$this->assertInstanceOf(Mocks\A::class, $test1->a);
-		$this->assertInstanceOf(Mocks\B::class, $test1->b);
-		$this->assertEquals($test1->name, 'Antoine Bellion');
+		$test = $resolver->resolveClass(Mocks\BParameter::class, $parametersA);
+		$this->assertInstanceOf(Mocks\BParameter::class, $test);
+		$this->assertInstanceOf(Mocks\A::class, $test->a);
+		$this->assertInstanceOf(Mocks\B::class, $test->b);
+		$this->assertEquals($test->name, 'Antoine Bellion');
 
 		/* Test with numbered parameter */
-		$test2 = $resolver->resolveClass(Mocks\BParameter::class, $parametersB);
-		$this->assertInstanceOf(Mocks\BParameter::class, $test2);
-		$this->assertInstanceOf(Mocks\A::class, $test2->a);
-		$this->assertInstanceOf(Mocks\B::class, $test2->b);
-		$this->assertEquals($test2->name, 'Antoine Bellion');
+		$test = $resolver->resolveClass(Mocks\BParameter::class, $parametersB);
+		$this->assertInstanceOf(Mocks\BParameter::class, $test);
+		$this->assertInstanceOf(Mocks\A::class, $test->a);
+		$this->assertInstanceOf(Mocks\B::class, $test->b);
+		$this->assertEquals($test->name, 'Antoine Bellion');
+	}
+	public function testResolveClassWithDependenciesD()
+	{
+		$resolver = new Resolver;
+		$parametersA = ['name' => 'Antoine Bellion', 'age' => 20];
+		$parametersB = [1 => 'Antoine Bellion', 3 => 20];
+		$parametersC = ['age' => 20];
+		$parametersD = [3 => 20];
+
+		/* Test with named parameter */
+		$test = $resolver->resolveClass(Mocks\CParameter::class, $parametersA);
+		$this->assertInstanceOf(Mocks\CParameter::class, $test);
+		$this->assertInstanceOf(Mocks\A::class, $test->a);
+		$this->assertInstanceOf(Mocks\B::class, $test->b);
+		$this->assertEquals($test->age, 20);
+		$this->assertEquals($test->name, 'Antoine Bellion');
+
+		/* Test with numbered parameter */
+		$test = $resolver->resolveClass(Mocks\CParameter::class, $parametersB);
+		$this->assertInstanceOf(Mocks\CParameter::class, $test);
+		$this->assertInstanceOf(Mocks\A::class, $test->a);
+		$this->assertInstanceOf(Mocks\B::class, $test->b);
+		$this->assertEquals($test->age, 20);
+		$this->assertEquals($test->name, 'Antoine Bellion');
+
+		/* Test with one named parameter */
+		$test = $resolver->resolveClass(Mocks\CParameter::class, $parametersC);
+		$this->assertInstanceOf(Mocks\CParameter::class, $test);
+		$this->assertInstanceOf(Mocks\A::class, $test->a);
+		$this->assertInstanceOf(Mocks\B::class, $test->b);
+		$this->assertEquals($test->age, 20);
+		$this->assertEquals($test->name, 'Antoine');
+
+		/* Test with one numbered parameter */
+		$test = $resolver->resolveClass(Mocks\CParameter::class, $parametersC);
+		$this->assertInstanceOf(Mocks\CParameter::class, $test);
+		$this->assertInstanceOf(Mocks\A::class, $test->a);
+		$this->assertInstanceOf(Mocks\B::class, $test->b);
+		$this->assertEquals($test->age, 20);
+		$this->assertEquals($test->name, 'Antoine');
 	}
 }
