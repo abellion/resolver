@@ -145,7 +145,7 @@ class Resolver
      * @param  array                 $parameters
      * @return mixed
      */
-    protected function resolveParameter(ReflectionParameter $parameter, array $parameters = [])
+    public function resolveParameter(ReflectionParameter $parameter, array $parameters = [])
     {
         $name = $parameter->name;
         $index = $parameter->getPosition();
@@ -173,7 +173,7 @@ class Resolver
      * @param  array  $parameters
      * @return array
      */
-    protected function resolveParameters(array $reflectionParameters, array $parameters = [])
+    public function resolveParameters(array $reflectionParameters, array $parameters = [])
     {
         $dependencies = [];
 
