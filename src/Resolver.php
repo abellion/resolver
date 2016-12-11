@@ -139,13 +139,31 @@ class Resolver
     }
 
     /**
+     * Resolve an array of \ReflectionParameter parameters
+     *
+     * @param  array  $reflectionParameters
+     * @param  array  $parameters
+     * @return array
+     */
+    public function resolveParameters(array $reflectionParameters, array $parameters = [])
+    {
+        $dependencies = [];
+
+        foreach ($reflectionParameters as $parameter) {
+            $dependencies[] = $this->resolveParameter($parameter, $parameters);
+        }
+
+        return self::mergeParameters($dependencies, $parameters);
+    }
+
+    /**
      * Resolve a parameter
      *
      * @param  \ReflectionParameter  $parameter
      * @param  array                 $parameters
      * @return mixed
      */
-    public function resolveParameter(ReflectionParameter $parameter, array $parameters = [])
+    private function resolveParameter(ReflectionParameter $parameter, array $parameters = [])
     {
         $name = $parameter->name;
         $index = $parameter->getPosition();
@@ -164,24 +182,6 @@ class Resolver
         }
 
         throw new Exception("Unresolvable dependency resolving [$parameter] in [".end($this->buildStack)."]");
-    }
-
-    /**
-     * Resolve an array of \ReflectionParameter parameters
-     *
-     * @param  array  $reflectionParameters
-     * @param  array  $parameters
-     * @return array
-     */
-    public function resolveParameters(array $reflectionParameters, array $parameters = [])
-    {
-        $dependencies = [];
-
-        foreach ($reflectionParameters as $key => $parameter) {
-            $dependencies[] = $this->resolveParameter($parameter, $parameters);
-        }
-
-        return self::mergeParameters($dependencies, $parameters);
     }
 
     /**
@@ -208,7 +208,7 @@ class Resolver
      * @param  mixed $subject
      * @return mixed
      */
-    protected static function getReflector($subject)
+    public static function getReflector($subject)
     {
         if (self::isClass($subject)) {
             return self::getClassReflector($subject);
@@ -227,7 +227,7 @@ class Resolver
      * @param  string $class
      * @return \ReflectionClass
      */
-    protected static function getClassReflector($class)
+    public static function getClassReflector($class)
     {
         return new ReflectionClass($class);
     }
@@ -238,7 +238,7 @@ class Resolver
      * @param  string|array $method
      * @return \ReflectionMethod
      */
-    protected static function getMethodReflector($method)
+    public static function getMethodReflector($method)
     {
         if (is_string($method)) {
             return new ReflectionMethod($method);
@@ -253,9 +253,8 @@ class Resolver
      * @param  string|closure $function
      * @return \ReflectionFunction
      */
-    protected static function getFunctionReflector($function)
+    public static function getFunctionReflector($function)
     {
         return new ReflectionFunction($function);
     }
-
 }
