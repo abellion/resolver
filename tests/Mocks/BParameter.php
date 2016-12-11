@@ -15,6 +15,15 @@ class BParameter
 		$this->name = $name;
 	}
 
+	public function getA()
+	{
+		return $this->a;
+	}
+	public function getB()
+	{
+		return $this->b;
+	}
+
 	public function getName()
 	{
 		return $this->name;

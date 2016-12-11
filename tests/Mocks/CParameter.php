@@ -17,6 +17,15 @@ class CParameter
 		$this->name = $name;
 	}
 
+	public function getA()
+	{
+		return $this->a;
+	}
+	public function getB()
+	{
+		return $this->b;
+	}
+
 	public function getAge()
 	{
 		return $this->age;

@@ -10,4 +10,9 @@ class B
 	{
 		$this->a = $a;
 	}
+
+	public function getA()
+	{
+		return $this->a;
+	}
 }

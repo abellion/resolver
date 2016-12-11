@@ -17,29 +17,27 @@ class ResolverTest extends TestCase
 
 	public function testIsClass()
 	{
-		$this->assertTrue(Resolver::isClass(Resolver::class));
-		$this->assertTrue(Resolver::isClass('Abellion\Resolver\Resolver'));
+		$this->assertTrue(Resolver::isClass(Mocks\A::class));
+		$this->assertTrue(Resolver::isClass('Abellion\Resolver\Tests\Mocks\A'));
 
 		/* From isFunction */
 		$this->assertFalse(Resolver::isClass('strlen'));
 		$this->assertFalse(Resolver::isClass(function() { }));
 		/* From isMethod */
-		$this->assertFalse(Resolver::isClass([$this, 'testIsClass']));
-		$this->assertFalse(Resolver::isClass([Resolver::class, 'isClass']));
-		$this->assertFalse(Resolver::isClass('Abellion\Resolver\Resolver::isClass'));
+		$this->assertFalse(Resolver::isClass([Mocks\A::class, 'getName']));
+		$this->assertFalse(Resolver::isClass('Abellion\Resolver\Tests\Mocks\A::getName'));
 	}
 	public function testIsMethod()
 	{
-		$this->assertTrue(Resolver::isMethod([$this, 'testIsClass']));
-		$this->assertTrue(Resolver::isMethod([Resolver::class, 'isClass']));
-		$this->assertTrue(Resolver::isMethod('Abellion\Resolver\Resolver::isClass'));
+		$this->assertTrue(Resolver::isMethod([Mocks\A::class, 'getName']));
+		$this->assertTrue(Resolver::isMethod('Abellion\Resolver\Tests\Mocks\A::getName'));
 
 		/* From isFunction */
 		$this->assertFalse(Resolver::isMethod('strlen'));
 		$this->assertFalse(Resolver::isMethod(function() { }));
 		/* From isClass */
-		$this->assertFalse(Resolver::isMethod(Resolver::class));
-		$this->assertFalse(Resolver::isMethod('Abellion\Resolver\Resolver'));
+		$this->assertFalse(Resolver::isMethod(Mocks\A::class));
+		$this->assertFalse(Resolver::isMethod('Abellion\Resolver\Tests\Mocks\A'));
 	}
 	public function testIsFunction()
 	{
@@ -47,12 +45,11 @@ class ResolverTest extends TestCase
 		$this->assertTrue(Resolver::isFunction(function() { }));
 
 		/* From isMethod */
-		$this->assertFalse(Resolver::isFunction([$this, 'testIsClass']));
-		$this->assertFalse(Resolver::isFunction([Resolver::class, 'isClass']));
-		$this->assertFalse(Resolver::isFunction('Abellion\Resolver\Resolver::isClass'));
+		$this->assertFalse(Resolver::isFunction([Mocks\A::class, 'getName']));
+		$this->assertFalse(Resolver::isFunction('Abellion\Resolver\Tests\Mocks\A::getName'));
 		/* From isClass */
-		$this->assertFalse(Resolver::isFunction(Resolver::class));
-		$this->assertFalse(Resolver::isFunction('Abellion\Resolver\Resolver'));
+		$this->assertFalse(Resolver::isFunction(Mocks\A::class));
+		$this->assertFalse(Resolver::isFunction('Abellion\Resolver\Tests\Mocks\A'));
 	}
 
 	/**
@@ -172,31 +169,34 @@ class ResolverTest extends TestCase
 	public function testResolveClass()
 	{
 		$resolver = new Resolver;
+		$parametersA = ['name' => 'Antoine'];
 
-		$this->assertInstanceOf(Resolver::class, $resolver->resolveClass(Resolver::class));
-		$this->assertInstanceOf(Resolver::class, $resolver->resolveClass('Abellion\Resolver\Resolver'));
+		$this->assertInstanceOf(Mocks\A::class, $resolver->resolveClass(Mocks\A::class));
+		$this->assertInstanceOf(Mocks\A::class, $resolver->resolveClass('Abellion\Resolver\Tests\Mocks\A'));
+
+		/* With parameter */
+		$this->assertInstanceOf(Mocks\AParameter::class, $resolver->resolveClass(Mocks\AParameter::class, $parametersA));
 	}
 	public function testResolveMethod()
 	{
 		$resolver = new Resolver;
-		$parametersA = ['name' => 'Antoine', 'age' => 20];
 
-		$test = $resolver->resolveClass(Mocks\CParameter::class, $parametersA);
+		$this->assertEquals('Antoine', $resolver->resolveMethod([Mocks\A::class, 'getName']));
+		$this->assertEquals('Antoine', $resolver->resolveMethod('Abellion\Resolver\Tests\Mocks\A::getName'));
 
-		$this->assertEquals($resolver->resolveMethod([$test, 'getAge']), 20);
-		$this->assertEquals($resolver->resolveMethod([$test, 'getName']), 'Antoine');
-
-		$this->assertTrue($resolver->resolveMethod([$resolver, 'isClass'], [Resolver::class]));
-		$this->assertTrue($resolver->resolveMethod([Resolver::class, 'isClass'], [Resolver::class]));
-		$this->assertTrue($resolver->resolveMethod('Abellion\Resolver\Resolver::isClass', [Resolver::class]));
+		/* With parameter */
+		$this->assertEquals('Antoine', $resolver->resolveMethod([Mocks\A::class, 'getParameter'], ['Antoine']));
 	}
 	public function testResolveFunction()
 	{
 		$resolver = new Resolver;
 
-		$this->assertEquals($resolver->resolveFunction('strlen', ['Antoine']), 7);
+		$this->assertEquals($resolver->resolveFunction('time'), time());
 		$this->assertEquals($resolver->resolveFunction(function() {
 			return 'Antoine';
 		}), 'Antoine');
+
+		/* With parameter */
+		$this->assertEquals($resolver->resolveFunction('strlen', ['Antoine']), 7);
 	}
 }
