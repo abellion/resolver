@@ -16,8 +16,8 @@
         }
     },
     "autoload-dev": {
-        "classmap": [
-            "tests/"
-        ]
+        "psr-4": {
+            "Abellion\\Resolver\\Tests\\": "tests/"
+        }
     }
 }
