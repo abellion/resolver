@@ -1,0 +1,13 @@
+{
+    "name": "abellion/resolver",
+    "description": "Super fast PHP dependency resolver",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Antoine Bellion",
+            "email": "antoinebellion@msn.com"
+        }
+    ],
+    "require": {}
+}
