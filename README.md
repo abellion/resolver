@@ -1,3 +1,5 @@
+[![Latest Stable Version](https://poser.pugx.org/abellion/resolver/v/stable)](https://packagist.org/packages/abellion/resolver) [![License](https://poser.pugx.org/abellion/resolver/license)](https://packagist.org/packages/abellion/resolver)
+
 ## Resolver (Dependency Injection)
 
 This package aim to provide a simple yet powerful interface for resolving classes / methods / closures dependencies.
