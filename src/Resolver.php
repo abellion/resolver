@@ -17,7 +17,7 @@ class Resolver
      *
      * @var array
      */
-    protected $buildStack = [];
+    private $buildStack = [];
 
     /**
      * Check if something is a class
